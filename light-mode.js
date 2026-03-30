@@ -3,7 +3,7 @@ const btn = document.getElementById('theme-toggle');
 
     function updateButton() {
       const isDark = body.classList.contains('dark');
-      btn.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
+      btn.textContent = isDark ? '☀️' : '🌙 ';
     }
     btn.addEventListener('click', () => {
       if (body.classList.contains('dark')) {
