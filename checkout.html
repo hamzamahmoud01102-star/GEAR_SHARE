@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - MyStore</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+</head>
+<body class="bg-light">
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+
+        <h1 class="text-center mb-5 fw-bold">Checkout</h1>
+
+        <div class="row g-4">
+
+          <div class="col-lg-5">
+            <div class="card blue-shadow h-100">
+              <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-semibold">
+                  <i class="fas fa-shopping-cart text-primary me-2"></i>
+                  Order Summary
+                </h5>
+              </div>
+              <div class="card-body" id="checkout-items">
+              </div>
+              <div class="card-footer bg-white">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Subtotal</span>
+                  <span id="subtotal" class="fw-medium">$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                  <span class="text-muted">Shipping</span>
+                  <span class="text-success fw-medium">Free</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fs-5">
+                  <strong>Total</strong>
+                  <strong id="total" class="text-primary">$0.00</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="card blue-shadow">
+              <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-semibold">Payment Details</h5>
+              </div>
+              <div class="card-body">
+                <form id="checkout-form">
+
+                  <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control card-input" required placeholder="John Doe">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control card-input" required placeholder="+20 101 234 5678">
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label">Full Address</label>
+                    <textarea class="form-control card-input" rows="3" required placeholder="Your full delivery address"></textarea>
+                  </div>
+
+                  <h6 class="mt-4 mb-3">Payment Method</h6>
+                  <div class="row g-3 mb-4">
+                    <div class="col-4">
+                      <div class="border border-primary rounded-3 p-3 text-center">
+                        <i class="fas fa-credit-card fa-2x text-primary mb-2"></i>
+                        <p class="mb-0 small fw-medium">Credit Card</p>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="border rounded-3 p-3 text-center">
+                        <i class="fas fa-mobile-alt fa-2x text-muted mb-2"></i>
+                        <p class="mb-0 small fw-medium">Vodafone Cash</p>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="border rounded-3 p-3 text-center">
+                        <i class="fas fa-wallet fa-2x text-muted mb-2"></i>
+                        <p class="mb-0 small fw-medium">Cash on Delivery</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-8 mb-3">
+                      <label class="form-label">Card Number</label>
+                      <input type="text" maxlength="19" class="form-control card-input" placeholder="1234 5678 9012 3456">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Expiry Date</label>
+                      <input type="text" placeholder="MM/YY" class="form-control card-input">
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label">CVV</label>
+                    <input type="text" maxlength="4" class="form-control card-input" placeholder="123">
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold">
+                    <i class="fas fa-lock me-2"></i>
+                    Pay Securely
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <script src="bootstrap/bootstrap.bundle.min.js"></script>
+<script>
+  function loadCheckout() {
+  let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+  
+  const itemsContainer = document.getElementById('checkout-items');
+  const subtotalEl = document.getElementById('subtotal');
+  const totalEl = document.getElementById('total');
+
+  itemsContainer.innerHTML = '';
+
+  if (cart.length === 0) {
+    itemsContainer.innerHTML = `<p class="text-center text-muted py-4">Your cart is empty</p>`;
+    subtotalEl.textContent = '$0.00';
+    totalEl.textContent = '$0.00';
+    return;
+  }
+
+  let subtotal = 0;
+
+  cart.forEach(item => {
+    const qty = item.quantity || 1;
+    const itemTotal = item.price * qty;
+    subtotal += itemTotal;
+
+    itemsContainer.innerHTML += `
+      <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+        <div>
+          <h6 class="mb-1">${item.name}</h6>
+          <small class="text-muted">Qty: ${qty} × $${item.price}</small>
+        </div>
+        <div class="text-end fw-semibold">
+          $${itemTotal.toFixed(2)}
+        </div>
+      </div>
+    `;
+  });
+
+  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  totalEl.textContent = `$${subtotal.toFixed(2)}`;
+}
+
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+  
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  alert("✅ Order placed successfully!\nThank you for shopping with us.");
+  window.location.href = "index - Copy.html";
+  
+  sessionStorage.removeItem('cart');
+  
+  setTimeout(() => {
+    window.location.href = "index.html"; 
+  }, 1500);
+});
+
+window.onload = loadCheckout;
+</script>
+</body>
+</html>
